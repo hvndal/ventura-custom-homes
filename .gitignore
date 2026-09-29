@@ -17,6 +17,9 @@ pnpm-debug.log*
 .env.local
 .env.*.local
 cookies.txt
+video_analysis/
+YTB_*.mp4
+edited_videos/
 
 # Editor / OS
 .DS_Store
