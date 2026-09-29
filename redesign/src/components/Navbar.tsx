@@ -20,8 +20,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, activeTab, s
 
   const navLinks = [
     { name: 'About Us', id: 'about' },
-    { name: 'Works', id: 'portfolio' },
-    { name: 'Voices', id: 'testimonials' },
+    { name: 'Estates', id: 'portfolio' },
+    { name: 'Client Stories', id: 'testimonials' },
     { name: 'Contact', id: 'contact' },
   ];
 
@@ -87,12 +87,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, activeTab, s
                   <button
                     key={link.id}
                     onClick={() => handleNavClick(link.id)}
-                    className={`relative py-1 text-[13px] tracking-[0.12em] uppercase transition-all duration-300 cursor-pointer font-medium group ${
+                    className={`relative py-1 text-[21px] tracking-[0.01em] transition-all duration-300 cursor-pointer group ${
                       scrolled
                         ? 'text-[#6B6B6B] hover:text-[#0A0A0A]'
                         : 'text-white/80 hover:text-white'
                     }`}
-                    style={{ fontFamily: 'var(--font-sans)' }}
+                    style={{ fontFamily: 'var(--font-data)' }}
                   >
                     {link.name}
                     <span
@@ -109,7 +109,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, activeTab, s
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={onOpenConsultation}
-                className={`text-[12px] tracking-[0.14em] uppercase font-medium px-6 py-2.5 transition-all duration-500 cursor-pointer ${
+                className={`text-[16px] tracking-[0.06em] px-7 py-2 transition-all duration-500 cursor-pointer ${
                   scrolled
                     ? 'bg-[#0A0A0A] text-white hover:bg-[#262626]'
                     : 'bg-white/90 backdrop-blur-md text-[#0A0A0A] hover:bg-white'

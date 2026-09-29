@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import { Loader } from './components/Loader';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { FeaturedPortfolio } from './components/FeaturedPortfolio';
@@ -15,6 +17,8 @@ export function App() {
   const [isConsultationOpen, setIsConsultationOpen] = useState<boolean>(false);
   const [preselectedProject, setPreselectedProject] = useState<string>('');
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const finishLoading = useCallback(() => setLoading(false), []);
 
   const handleOpenConsultation = (projectName?: string) => {
     setPreselectedProject(projectName || '');
@@ -29,6 +33,8 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-white text-[#0A0A0A] flex flex-col">
+      <AnimatePresence>{loading && <Loader onDone={finishLoading} />}</AnimatePresence>
+
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -41,7 +47,7 @@ export function App() {
           onScrollToSection={handleScrollToSection}
         />
 
-        <FoundersSection />
+        <FoundersSection onOpenConsultation={() => handleOpenConsultation()} />
 
         <FeaturedPortfolio
           onSelectProject={(project) => setSelectedProject(project)}
@@ -64,7 +70,10 @@ export function App() {
       <ProjectModal
         project={selectedProject}
         onClose={() => setSelectedProject(null)}
-        onInquire={(projName) => handleOpenConsultation(projName)}
+        onInquire={(projName) => {
+          setSelectedProject(null);
+          handleOpenConsultation(projName);
+        }}
       />
     </div>
   );

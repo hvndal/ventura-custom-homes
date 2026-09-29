@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Mail, Phone } from 'lucide-react';
+import { FOUNDER_CONTACTS, OFFICES } from '../data/contacts';
 
 export const ContactSection: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
@@ -31,9 +33,39 @@ export const ContactSection: React.FC = () => {
         </h2>
       </motion.div>
       
-      <p className="text-sm text-[#6B6B6B] max-w-md mx-auto text-center mt-6 mb-16" style={{ fontFamily: 'var(--font-sans)' }}>
-        Ready to build something extraordinary? Tell us about your vision.
+      <p className="text-lg text-[#6B6B6B] max-w-md mx-auto text-center mt-6 mb-16" style={{ fontFamily: 'var(--font-sans)' }}>
+        Call Loy or Shideh directly, or send us a note about your lot and your vision.
       </p>
+
+      {/* Direct lines to the founders */}
+      <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-5 mb-24">
+        {FOUNDER_CONTACTS.map((f, i) => (
+          <motion.div
+            key={f.key}
+            className="flex items-center gap-5 border border-black/[0.08] p-5 sm:p-6 bg-white hover:shadow-[0_24px_60px_rgba(0,0,0,0.08)] transition-shadow duration-500"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <img src={f.photo} alt={f.name} loading="lazy" className="w-24 h-28 sm:w-28 sm:h-32 object-cover object-top shrink-0" />
+            <div className="min-w-0">
+              <div className="text-2xl font-bold uppercase text-[#0A0A0A] leading-none" style={{ fontFamily: 'var(--font-display)' }}>
+                {f.name}
+              </div>
+              <div className="mt-1 text-[17px] italic text-[#6B6B6B]" style={{ fontFamily: 'var(--font-data)' }}>
+                {f.role}
+              </div>
+              <a href={`tel:${f.tel}`} className="mt-3 flex items-center gap-2 text-[19px] text-[#0A0A0A] hover:text-[#6B6B6B] transition-colors" style={{ fontFamily: 'var(--font-data)' }}>
+                <Phone className="w-4 h-4 shrink-0" /> {f.phone}
+              </a>
+              <a href={`mailto:${f.email}`} className="mt-1 flex items-center gap-2 text-[19px] text-[#0A0A0A] hover:text-[#6B6B6B] transition-colors break-all" style={{ fontFamily: 'var(--font-data)' }}>
+                <Mail className="w-4 h-4 shrink-0" /> {f.email}
+              </a>
+            </div>
+          </motion.div>
+        ))}
+      </div>
 
       <div className="max-w-2xl mx-auto text-center">
         {!submitted && (
@@ -121,12 +153,19 @@ export const ContactSection: React.FC = () => {
           </form>
         )}
 
-        <div className="mt-20 pt-8 border-t border-black/10 flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 text-xs text-[#9A9A9A] uppercase tracking-[0.1em]">
-          <span>+1 (214) 577-1959</span>
-          <span className="hidden md:inline">•</span>
-          <span>inquiries@venturacustomhomes.com</span>
-          <span className="hidden md:inline">•</span>
-          <span>Dallas / Frisco</span>
+        <div className="mt-20 pt-10 border-t border-black/10 grid sm:grid-cols-3 gap-8 text-center sm:text-left">
+          {OFFICES.map((o) => (
+            <div key={o.name}>
+              <div className="text-[20px] font-semibold text-[#0A0A0A]" style={{ fontFamily: 'var(--font-data)' }}>
+                {o.name}
+              </div>
+              {o.lines.map((l) => (
+                <div key={l} className="text-[15px] text-[#6B6B6B]" style={{ fontFamily: 'var(--font-sans)' }}>
+                  {l}
+                </div>
+              ))}
+            </div>
+          ))}
         </div>
       </div>
     </section>

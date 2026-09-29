@@ -15,21 +15,27 @@
 - **Colors**: Background `#FFFFFF` (Pure Greek White) & `#F5F3EF` (Warm Stone), Primary Ink `#0A0A0A`, Muted `#6B6B6B`, Light `#9A9A9A`, Hairline Borders `border-black/[0.08]`. **NO gold frames or dark obsidian sections** (except `Footer.tsx` which is `#0A0A0A`).
 - **Fonts** (defined in `redesign/index.html` & `redesign/src/index.css`):
   - `var(--font-display)`: `'Big Shoulders Display', Impact, sans-serif` (massive uppercase condensed headlines)
-  - `var(--font-sans)`: `'Outfit', -apple-system, sans-serif` (clean geometric body/UI)
-  - `var(--font-data)`: `'Big Shoulders Text', monospace` (numbers, indices, coordinates)
+  - `var(--font-sans)`: `'Source Sans 3', -apple-system, sans-serif` (clean geometric body/UI)
+  - `var(--font-data)`: `'Cormorant Garamond', monospace` (numbers, indices, coordinates)
 
 ## 3. Exact File Map (`redesign/src/`)
 - `App.tsx` (74 lines) — Root layout: `<Navbar />` → `<Hero />` → `<FoundersSection />` → `<FeaturedPortfolio />` → `<TestimonialsSection />` → `<ContactSection />` → `<Footer />` + modals.
 - `index.css` (135 lines) — Tailwind v4 `@import "tailwindcss";`, CSS font variables, `.img-editorial` grayscale-to-color hover filter, keyframe animations.
 - `components/Navbar.tsx` (~155 lines) — Fixed header with official transparent-ish top-left Ventura logo (`/ventura-logo-light.png` over dark hero video → crossfades to `/ventura-logo-dark.png` on white scroll). Links: `About Us` (`#about`), `Works` (`#portfolio`), `Voices` (`#testimonials`), `Contact` (`#contact`).
 - `components/Hero.tsx` (~75 lines) — 100vh full-bleed silent background video (`/ventura_stock_hero_1080p.mp4`), no center text overlay, bottom-left coordinates (`Dallas · Highland Park · Frisco`), bottom-right animated laser scroll indicator.
-- `components/FoundersSection.tsx` (~315 lines) — **`#about` / `#founders` ("ABOUT US")**. Features Loy & Shideh Lowary **together** (`/founders/lowary-together.jpg`) with 3D mouse-tilt parallax, curtain-wipe `clipPath` reveal, dual overlaid glass nameplates, animated count-up stats (`70+ YRS`, `400+`, `26,000 SF`, `20+`), and connected side-by-side biographies.
-- `components/FeaturedPortfolio.tsx` (142 lines) — **`#portfolio` ("WORKS")**. Clean magazine-spread grid (`col-span-2 aspect-[3/2]` + `col-span-1 aspect-[2/3]` + 3-col `aspect-[4/3]`) with category filter bar. Clicking a card opens `ProjectModal.tsx`.
-- `components/ProjectModal.tsx` (132 lines) — Full-screen white architectural lightbox (`fixed inset-0 z-50 bg-white`) with keyboard arrow navigation and bottom thumbnail strip.
+- `components/FoundersSection.tsx` — **`#about` ("Your Home, Built Right.")**. Realtor-style: Loy & Shideh together photo + trust checklist + CTA, count-up stats strip on stone, two agent-style cards (Loy: builder/engineer, Shideh: design/client experience). Takes `onOpenConsultation`.
+- `components/FeaturedPortfolio.tsx` — **`#portfolio` ("Find Your Estate", nav label "Estates")**. Listing-style: filter chips, full-bleed spotlight listing, 3-col listing cards (status pill, price, beds/baths/SF/garage, photo count), custom-build CTA. Full-color photos (no grayscale). Demo data comes from `src/data/listingMeta.ts` (`getListingMeta`, derived from sqft/location — NOT real).
+- `components/ProjectModal.tsx` — Listing detail: photo gallery + thumbnails left, price/specs/description/"Request a Private Showing" panel right (`onInquire` closes modal and opens consultation).
 - `components/TestimonialsSection.tsx` (94 lines) — **`#testimonials`**. Warm stone (`#F5F3EF`) poster-style quote carousel with `[DEMO]` prefix and `AnimatePresence` fade.
 - `components/ContactSection.tsx` (142 lines) — **`#contact` ("LET'S TALK")**. Minimal underline inputs + demo warning pill (`⚠ Demo Form — Not Connected`).
 - `components/ConsultationModal.tsx` (175 lines) — Modal inquiry drawer triggered by navbar `Inquire` button.
 - `components/Footer.tsx` (42 lines) — Minimal `#0A0A0A` footer with `mander.tech` credit.
+- `components/Loader.tsx` — Real preloader (logo wipe + progress). Waits for fonts, logo and hero video `canplay`; min 2s, max 6s; timer-based so it works in background tabs.
+- `components/AboutTiles.tsx` — Bento stat tiles (rolling-digit odometer, photo marquee, SVG ring + blueprint draw-on). `FoundersSection.tsx` also has story chapters (parallax portraits) + timeline. Facts come from venturacustomhomes.com (Loy: construction since 1975, 400+ homes since 1982; Shideh: finance, mortgage 1988, Regional Manager, 15 yrs construction financing).
+- `components/ShaderBackground.tsx` — Raw WebGL silk/marble shader (used behind `TestimonialsSection.tsx`). Do NOT call `loseContext` in cleanup (breaks React StrictMode remount).
+- `components/RetryImg.tsx` — img that retries when the remote CDN drops requests.
+- `data/contacts.ts` — Founder phones/email + 3 office addresses (only one public email exists: slowary@gmail.com).
+- UI chrome (buttons/labels/nav) uses Cormorant via a global rule in `index.css`; use class `eyebrow` for italic section eyebrows.
 
 ## 4. Public Assets (`redesign/public/`)
 - `/ventura_stock_hero_1080p.mp4` (`55.8 MB`, `1920x1080`, `23.976fps`) — 15.0s master hero loop:

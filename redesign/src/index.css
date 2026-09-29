@@ -2,8 +2,8 @@
 
 :root {
   --font-display: 'Big Shoulders Display', Impact, sans-serif;
-  --font-sans: 'Outfit', -apple-system, sans-serif;
-  --font-data: 'Big Shoulders Text', sans-serif;
+  --font-sans: 'Source Sans 3', -apple-system, sans-serif;
+  --font-data: 'Cormorant Garamond', Georgia, serif;
   --white: #FFFFFF;
   --stone: #F5F3EF;
   --black: #0A0A0A;
@@ -17,6 +17,7 @@
 
 body {
   font-family: var(--font-sans);
+  font-variant-numeric: lining-nums;
   background-color: var(--white);
   color: var(--black);
   overflow-x: hidden;
@@ -115,4 +116,45 @@ body::after {
 }
 .scroll-smooth-x > * {
   scroll-snap-align: start;
+}
+
+/* Refined serif for UI chrome: buttons, labels and tracked links use Cormorant instead of a rigid sans */
+button:not([style*="font-display"]),
+label,
+a[class*="tracking-"] {
+  font-family: var(--font-data) !important;
+  font-weight: 600;
+  font-size-adjust: 0.5;
+}
+
+.eyebrow {
+  font-family: var(--font-data) !important;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 20px;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: #6B6B6B;
+}
+
+/* Marquee rows for photo tiles */
+@keyframes marquee-x {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-x 60s linear infinite;
+}
+.marquee-track.reverse { animation-direction: reverse; animation-duration: 75s; }
+.marquee-wrap:hover .marquee-track { animation-play-state: paused; }
+
+@keyframes sheen {
+  from { transform: translateX(-120%) skewX(-20deg); }
+  to { transform: translateX(320%) skewX(-20deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
 }
