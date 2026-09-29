@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+:root {
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Montserrat', -apple-system, sans-serif;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #0d0e11;
+  color: #e5e2dc;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  letter-spacing: 0.02em;
+}
+
+h1, h2, h3, h4, .font-serif {
+  font-family: var(--font-serif);
+  font-feature-settings: "liga" 1, "dlig" 1;
+}
+
+/* Luxury Editorial Hairline Accents */
+.hairline-border {
+  border-color: rgba(197, 168, 128, 0.25);
+}
+
+.luxury-gold {
+  color: #c5a880;
+}
+
+.bg-luxury-gold {
+  background-color: #c5a880;
+}
+
+/* Subtle architectural hover zoom */
+.arch-hover-zoom {
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), filter 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.arch-hover-zoom:hover {
+  transform: scale(1.04);
+}
+
+/* Custom Minimalist Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #0d0e11;
+}
+::-webkit-scrollbar-thumb {
+  background: #252830;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c5a880;
+}
