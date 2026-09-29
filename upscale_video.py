@@ -3,93 +3,86 @@ import subprocess
 import shutil
 
 BASE_DIR = r"c:\Users\herma\Downloads\homes"
-SRC_VIDEO = os.path.join(BASE_DIR, "YTB_1790689971532.mp4")
+SRC_NATIVE_1080P = os.path.join(BASE_DIR, "native_1080p_source.mp4")
 WORK_DIR = os.path.join(BASE_DIR, "ai_upscale_work")
-FRAMES_DIR = os.path.join(WORK_DIR, "frames")
 UPSCALED_DIR = os.path.join(WORK_DIR, "upscaled")
-REALESRGAN_EXE = os.path.join(BASE_DIR, "realesrgan", "realesrgan-ncnn-vulkan.exe")
 
-os.makedirs(FRAMES_DIR, exist_ok=True)
-os.makedirs(UPSCALED_DIR, exist_ok=True)
+# Supersampling filter from 2560x1440 Real-ESRGAN frames -> razor-sharp 1920x1080
+SUPERSAMPLE_1080P = (
+    "scale=1920:1080:flags=lanczos+accurate_rnd,"
+    "cas=strength=0.75,"
+    "unsharp=5:5:0.85:5:5:0.0,"
+    "eq=contrast=1.08:brightness=0.01:saturation=1.08"
+)
 
-# Define the exact 4 chunks we need to extract to save time
-# (start_time, duration) in seconds
-# Logo: 06.8 to 10.1 (3.3s)
-# Founders Wide: 03.2 to 04.85 (1.65s) -> slowmo to 3.3s
-# Founders Cameo: 18.64 to 19.74 (1.1s) -> slowmo to 2.2s
-# Architecture: 20.84 to 27.04 (6.2s)
-CHUNKS = [
-    ("part1", 6.8, 3.3),
-    ("part2", 3.2, 1.65),
-    ("part3a", 18.64, 1.1),
-    ("part3b", 20.84, 6.2)
-]
+# 1. Part 1: Logo & Dusk Estate with smooth slow pan (3.3s from Real-ESRGAN 2560x1440 -> 1080p supersampled)
+print("1. Rendering Part 1 (Logo & Dusk Estate 1080p supersampled slow pan)...")
+part1_mp4 = os.path.join(WORK_DIR, "master_part1.mp4")
+subprocess.run([
+    "ffmpeg", "-framerate", "24000/1001", "-i", f"{UPSCALED_DIR}/part1/%04d.jpg",
+    "-vf", f"crop=w='iw*min(1, 1 - 0.0006*n)':h='ih*min(1, 1 - 0.0006*n)':x='(iw-ow)/2':y='(ih-oh)/2',{SUPERSAMPLE_1080P}",
+    "-c:v", "libx264", "-preset", "slow", "-crf", "14", "-pix_fmt", "yuv420p", "-r", "24000/1001", "-an",
+    part1_mp4, "-y"
+], check=True)
 
-# 1. Extract frames
-print("Extracting frames...")
-for name, ss, t in CHUNKS:
-    chunk_dir = os.path.join(FRAMES_DIR, name)
-    os.makedirs(chunk_dir, exist_ok=True)
-    subprocess.run([
-        "ffmpeg", "-ss", str(ss), "-i", SRC_VIDEO, "-t", str(t),
-        "-q:v", "2", f"{chunk_dir}/%04d.jpg", "-y"
-    ], check=True)
+# 2. Founders Side-Look Cameo ONLY (1.8s quick second):
+# Sourced directly from NATIVE 1920x1080P master (native_1080p_source.mp4 at 56.7s - 58.5s)
+# where Loy is looking at Shideh from the side — TRUE 1080p camera master, NO wide couch shot, NO ghosting!
+print("2. Rendering Founders Side-Look Cameo from TRUE NATIVE 1920x1080P source (56.7s - 58.5s)...")
+part_founders_side = os.path.join(WORK_DIR, "master_founders_side.mp4")
+subprocess.run([
+    "ffmpeg", "-ss", "56.7", "-i", SRC_NATIVE_1080P, "-t", "1.8",
+    "-vf", (
+        "crop=w='iw*min(1, 1 - 0.0005*n)':h='ih*min(1, 1 - 0.0005*n)':x='(iw-ow)/2':y='(ih-oh)/2',"
+        "scale=1920:1080:flags=lanczos+accurate_rnd,"
+        "cas=strength=0.45,"
+        "unsharp=5:5:0.45:5:5:0.0,"
+        "eq=contrast=1.06:brightness=0.01:saturation=1.05"
+    ),
+    "-c:v", "libx264", "-preset", "slow", "-crf", "14", "-pix_fmt", "yuv420p", "-r", "24000/1001", "-an",
+    part_founders_side, "-y"
+], check=True)
 
-# 2. Upscale frames with Real-ESRGAN (4x upscale to 2560x1440)
-print("Upscaling frames with Real-ESRGAN...")
-for name, _, _ in CHUNKS:
-    chunk_in = os.path.join(FRAMES_DIR, name)
-    chunk_out = os.path.join(UPSCALED_DIR, name)
-    os.makedirs(chunk_out, exist_ok=True)
-    subprocess.run([
-        REALESRGAN_EXE, "-i", chunk_in, "-o", chunk_out,
-        "-n", "realesrgan-x4plus", "-f", "jpg"
-    ], check=True)
+# 3. Part 3b: Architectural B-Roll (6.2s from Real-ESRGAN 2560x1440 -> 1080p supersampled)
+print("3. Rendering Part 3b (Architectural B-Roll 1080p supersampled)...")
+part3b_mp4 = os.path.join(WORK_DIR, "master_part3b.mp4")
+subprocess.run([
+    "ffmpeg", "-framerate", "24000/1001", "-i", f"{UPSCALED_DIR}/part3b/%04d.jpg",
+    "-vf", SUPERSAMPLE_1080P,
+    "-c:v", "libx264", "-preset", "slow", "-crf", "14", "-pix_fmt", "yuv420p", "-r", "24000/1001", "-an",
+    part3b_mp4, "-y"
+], check=True)
 
-# 3. Assemble and apply edits
-print("Assembling the 1080p final master...")
-# We use the upscaled frames (2560x1440) and scale/crop to 1920x1080.
-# For slow mo, we do minterpolate.
-def assemble_part(name, out_file, vf_extra=""):
-    chunk_out = os.path.join(UPSCALED_DIR, name)
-    # The frames are 24fps
-    subprocess.run([
-        "ffmpeg", "-framerate", "24000/1001", "-i", f"{chunk_out}/%04d.jpg",
-        "-vf", f"scale=1920:1080:flags=spline+accurate_rnd{vf_extra}",
-        "-c:v", "libx264", "-preset", "slow", "-crf", "16", "-r", "24000/1001", "-an",
-        out_file, "-y"
-    ], check=True)
+# 4. Part 3c: Native 1920x1080P Architectural Estate Streetscape Finale (3.7s from native_1080p_source.mp4 at 94.0s - 97.7s)
+print("4. Rendering Part 3c (Native 1920x1080P Architectural Finale)...")
+part3c_mp4 = os.path.join(WORK_DIR, "master_part3c.mp4")
+subprocess.run([
+    "ffmpeg", "-ss", "94.0", "-i", SRC_NATIVE_1080P, "-t", "3.7",
+    "-vf", (
+        "scale=1920:1080:flags=lanczos+accurate_rnd,"
+        "cas=strength=0.55,"
+        "unsharp=5:5:0.55:5:5:0.0,"
+        "eq=contrast=1.08:brightness=0.01:saturation=1.08"
+    ),
+    "-c:v", "libx264", "-preset", "slow", "-crf", "14", "-pix_fmt", "yuv420p", "-r", "24000/1001", "-an",
+    part3c_mp4, "-y"
+], check=True)
 
-# Part 1: Slow pan
-part1 = os.path.join(WORK_DIR, "part1.mp4")
-assemble_part("part1", part1, ",crop=w='iw*min(1, 1 - 0.0006*n)':h='ih*min(1, 1 - 0.0006*n)':x='(iw-ow)/2':y='(ih-oh)/2'")
-
-# Part 2: Founders Slowmo
-part2 = os.path.join(WORK_DIR, "part2.mp4")
-assemble_part("part2", part2, ",crop=w='iw*min(1, 1 - 0.0007*n)':h='ih*min(1, 1 - 0.0007*n)':x='(iw-ow)/2':y='(ih-oh)/2',setpts=2.0*PTS,minterpolate=fps=24000/1001:mi_mode=blend")
-
-# Part 3a: Founders Cameo Slowmo
-part3a = os.path.join(WORK_DIR, "part3a.mp4")
-assemble_part("part3a", part3a, ",setpts=2.0*PTS,minterpolate=fps=24000/1001:mi_mode=blend")
-
-# Part 3b: Architecture B-Roll
-part3b = os.path.join(WORK_DIR, "part3b.mp4")
-assemble_part("part3b", part3b, "")
-
-concat_manifest = os.path.join(WORK_DIR, "concat.txt")
+# 5. Concatenate into final 15.0s 1080p master (Part 1 -> Quick 1.8s Native 1080p Side-Look -> Architecture B-Roll)
+concat_manifest = os.path.join(WORK_DIR, "concat_master.txt")
 with open(concat_manifest, "w") as f:
-    f.write(f"file '{part1}'\n")
-    f.write(f"file '{part2}'\n")
-    f.write(f"file '{part3a}'\n")
-    f.write(f"file '{part3b}'\n")
+    f.write(f"file '{part1_mp4}'\n")
+    f.write(f"file '{part_founders_side}'\n")
+    f.write(f"file '{part3b_mp4}'\n")
+    f.write(f"file '{part3c_mp4}'\n")
 
 final_output = os.path.join(BASE_DIR, "edited_videos", "ventura_stock_hero_1080p.mp4")
 subprocess.run([
     "ffmpeg", "-f", "concat", "-safe", "0", "-i", concat_manifest,
-    "-c:v", "libx264", "-preset", "slow", "-crf", "16", "-an",
+    "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", "-movflags", "+faststart", "-an",
     final_output, "-y"
 ], check=True)
 
 frontend_public = os.path.join(BASE_DIR, "redesign", "public", "ventura_stock_hero_1080p.mp4")
 shutil.copy2(final_output, frontend_public)
-print("ALL DONE. TRUE 1080p CREATED via Real-ESRGAN.")
+print("SUCCESS: Final 1080p master rendered with ONLY the native 1080p side-look cameo!")

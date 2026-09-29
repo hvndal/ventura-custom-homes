@@ -94,45 +94,8 @@ export const FoundersSection: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Visual Cinema Portrait of Both Founders */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-16 md:mb-24"
-        >
-          <div className="relative w-full aspect-video bg-[#F5F3EF] border border-black/[0.08] overflow-hidden">
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              poster="/founders_portrait_1440p.jpg"
-              src="/founders_loop_1080p.mp4"
-              className="w-full h-full object-cover"
-            />
-          </div>
-
-          {/* Architectural Caption Bar */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 py-4 px-5 bg-[#F5F3EF] border-x border-b border-black/[0.08]">
-            <span
-              className="text-[11px] sm:text-xs tracking-[0.18em] uppercase text-[#0A0A0A] font-medium"
-              style={{ fontFamily: 'var(--font-data)' }}
-            >
-              SHIDEH &amp; LOY LOWARY — CO-FOUNDERS &amp; PRINCIPALS, DALLAS &amp; FRISCO, TEXAS
-            </span>
-            <span
-              className="text-[11px] tracking-[0.16em] uppercase text-[#9A9A9A]"
-              style={{ fontFamily: 'var(--font-data)' }}
-            >
-              ARCHIVE PORTRAIT / EST. 1997
-            </span>
-          </div>
-        </motion.div>
-
         {/* Dual Interactive / Editorial Founder Dossiers */}
-        <div className="border-t border-black/10 pt-12 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+        <div className="pt-4 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
           {/* Column 01 — LOY LOWARY */}
           <motion.article
             initial={{ opacity: 0, y: 36 }}
