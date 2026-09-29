@@ -76,10 +76,23 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Bottom Legal */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] tracking-wider text-slate-500 uppercase">
+        {/* Bottom Legal & Studio Credit */}
+        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] tracking-wider text-slate-500 uppercase">
           <div>
             &copy; {new Date().getFullYear()} Ventura Custom Homes Inc. All rights reserved.
+          </div>
+
+          <div className="text-center md:text-right text-[10px] tracking-widest text-slate-400">
+            Designed & Engineered by{' '}
+            <a
+              href="https://mander.tech"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#c5a880] hover:underline font-medium"
+            >
+              Mander Labs (mander.tech)
+            </a>
+            {' '}&bull; Web Design Studio &bull; Vancouver & Burnaby, BC
           </div>
 
           <button

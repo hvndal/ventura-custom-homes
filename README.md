@@ -2,6 +2,9 @@
 
 An ultra-luxury digital experience and technical overhaul designed for **Ventura Custom Homes** (Dallas & Frisco, Texas), custom estate builders since 1975 specializing in Highland Park, Preston Hollow, and The Preserve at Fields.
 
+> **Designed & Engineered by [Mander Labs Studio](https://mander.tech)**  
+> Premier Web Design & Software Engineering Studio based in **Vancouver & Metro Vancouver (Burnaby, Richmond, Surrey, Coquitlam, BC)**.
+
 ---
 
 ## 🏛️ Project Overview
@@ -91,6 +94,12 @@ Comparison screenshots of the original live site vs. the new architectural redes
 
 ---
 
+## 🌆 Studio & Geotargeting Meta
+- **Studio**: [Mander Labs Web Design](https://mander.tech)
+- **Location**: Vancouver & Metro Vancouver (Burnaby, Richmond, Surrey, Coquitlam), British Columbia, Canada
+- **Services**: Custom Web Application Development, High-End Architectural Redesigns, Headless E-commerce, & Digital Audit Engineering.
+
+---
+
 ## 🤝 Authors & Credits
-Designed and engineered for **Ventura Custom Homes**.
-Created with ❤️ by **Hundal** ([@hvndal](https://github.com/hvndal)).
+Designed and engineered for **Ventura Custom Homes** by **[Mander Labs](https://mander.tech)** ([@hvndal](https://github.com/hvndal)).
