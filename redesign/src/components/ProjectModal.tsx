@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Project } from '../data/siteData';
-import { X, ChevronLeft, ChevronRight, ArrowUpRight } from 'lucide-react';
 
 interface ProjectModalProps {
   project: Project | null;
@@ -8,122 +9,127 @@ interface ProjectModalProps {
   onInquire: (projectName: string) => void;
 }
 
-export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose, onInquire }) => {
-  if (!project) return null;
-
+export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
   const [activeImgIdx, setActiveImgIdx] = useState(0);
 
-  const prev = (e: React.MouseEvent) => {
+  useEffect(() => {
+    if (project) {
+      setActiveImgIdx(0);
+    }
+  }, [project]);
+
+  useEffect(() => {
+    if (!project) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      } else if (e.key === 'ArrowLeft') {
+        setActiveImgIdx((curr) => (curr === 0 ? project.images.length - 1 : curr - 1));
+      } else if (e.key === 'ArrowRight') {
+        setActiveImgIdx((curr) => (curr === project.images.length - 1 ? 0 : curr + 1));
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [project, onClose]);
+
+  if (!project) return null;
+
+  const handlePrev = (e: React.MouseEvent) => {
     e.stopPropagation();
     setActiveImgIdx((curr) => (curr === 0 ? project.images.length - 1 : curr - 1));
   };
 
-  const next = (e: React.MouseEvent) => {
+  const handleNext = (e: React.MouseEvent) => {
     e.stopPropagation();
     setActiveImgIdx((curr) => (curr === project.images.length - 1 ? 0 : curr + 1));
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8 bg-black/90 backdrop-blur-xl animate-in fade-in duration-300">
-      <div className="relative w-full max-w-6xl bg-[#0e0f14] border border-white/[0.1] shadow-2xl flex flex-col max-h-[94vh] overflow-hidden">
-        {/* Top Bar */}
-        <div className="p-6 border-b border-white/[0.08] flex items-center justify-between bg-[#111218]">
-          <div>
-            <div className="text-[10px] uppercase tracking-[0.3em] text-[#c5a880] font-mono">
-              {project.category} &bull; {project.location}
-            </div>
-            <h3 className="font-serif text-3xl font-light text-white mt-0.5">
-              {project.name}
-            </h3>
-          </div>
-
-          <button
-            onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white transition-colors cursor-pointer"
-            aria-label="Close"
-          >
-            <X className="w-5 h-5" />
-          </button>
+    <motion.div
+      className="fixed inset-0 z-50 bg-white flex flex-col"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+    >
+      {/* Top bar */}
+      <div className="bg-white border-b border-black/[0.06] px-6 sm:px-12 py-4 flex items-center justify-between z-10 shrink-0">
+        <div 
+          className="text-lg uppercase tracking-tight font-bold text-[#0A0A0A]"
+          style={{ fontFamily: 'var(--font-display)' }}
+        >
+          {project.name}
         </div>
-
-        {/* Body */}
-        <div className="overflow-y-auto flex-1 p-6 sm:p-10 space-y-8">
-          {/* Main Photo View */}
-          <div className="relative aspect-[16/9] w-full bg-black overflow-hidden flex items-center justify-center">
-            <img
-              src={project.images[activeImgIdx] || project.heroImage}
-              alt={`${project.name} ${activeImgIdx + 1}`}
-              className="w-full h-full object-contain"
-            />
-
-            {project.images.length > 1 && (
-              <>
-                <button
-                  onClick={prev}
-                  className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/60 hover:bg-black text-white flex items-center justify-center border border-white/10 transition-colors cursor-pointer"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-                <button
-                  onClick={next}
-                  className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-black/60 hover:bg-black text-white flex items-center justify-center border border-white/10 transition-colors cursor-pointer"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              </>
-            )}
-
-            <div className="absolute bottom-4 right-6 text-[10px] font-mono text-slate-400 bg-black/80 px-2.5 py-1">
-              {activeImgIdx + 1} / {project.images.length}
-            </div>
-          </div>
-
-          {/* Thumbnail Strip */}
-          {project.images.length > 1 && (
-            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
-              {project.images.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveImgIdx(idx)}
-                  className={`relative flex-shrink-0 w-24 h-16 overflow-hidden border transition-all cursor-pointer ${
-                    idx === activeImgIdx ? 'border-[#c5a880] opacity-100' : 'border-white/10 opacity-40 hover:opacity-100'
-                  }`}
-                >
-                  <img src={img} alt="thumbnail" className="w-full h-full object-cover" />
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* Details & Action */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pt-6 border-t border-white/[0.08] items-center">
-            <div className="md:col-span-8">
-              <span className="text-[10px] uppercase tracking-[0.3em] text-[#c5a880]">
-                Architectural Monograph
-              </span>
-              <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed mt-1">
-                {project.description}
-              </p>
-            </div>
-
-            <div className="md:col-span-4 flex flex-col gap-3">
-              <div className="text-right text-xs font-mono text-[#c5a880]">
-                Scale: {project.sqft}
-              </div>
-              <button
-                onClick={() => {
-                  onClose();
-                  onInquire(project.name);
-                }}
-                className="w-full py-4 bg-[#c5a880] hover:bg-[#d8be96] text-black text-[11px] tracking-[0.25em] uppercase font-medium transition-all duration-300 cursor-pointer flex items-center justify-center gap-2"
-              >
-                <span>Inquire on Similar Commission</span>
-                <ArrowUpRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
+        <div 
+          className="text-sm text-[#9A9A9A]"
+          style={{ fontFamily: 'var(--font-display)' }}
+        >
+          {String(activeImgIdx + 1).padStart(2, '0')} / {String(project.images.length).padStart(2, '0')}
         </div>
+        <button
+          onClick={onClose}
+          className="w-10 h-10 flex items-center justify-center hover:bg-[#F5F3EF] transition-colors cursor-pointer text-[#0A0A0A]"
+          aria-label="Close"
+        >
+          <X className="w-5 h-5" />
+        </button>
       </div>
-    </div>
+
+      {/* Main image area */}
+      <div className="flex-1 bg-[#F5F3EF] relative flex items-center justify-center overflow-hidden">
+        <img
+          src={project.images[activeImgIdx] || project.heroImage}
+          alt={`${project.name} ${activeImgIdx + 1}`}
+          className="w-full object-contain max-h-[calc(100vh-180px)]"
+        />
+
+        {project.images.length > 1 && (
+          <>
+            <button
+              onClick={handlePrev}
+              className="absolute left-6 w-12 h-12 rounded-full border border-black/10 hover:border-black/30 bg-white flex items-center justify-center transition-colors cursor-pointer text-[#0A0A0A]"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+            <button
+              onClick={handleNext}
+              className="absolute right-6 w-12 h-12 rounded-full border border-black/10 hover:border-black/30 bg-white flex items-center justify-center transition-colors cursor-pointer text-[#0A0A0A]"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+          </>
+        )}
+      </div>
+
+      {/* Bottom strip */}
+      <div className="bg-white border-t border-black/[0.06] px-6 sm:px-12 py-4 flex flex-col sm:flex-row items-center justify-between z-10 shrink-0 gap-4 sm:gap-0">
+        <div 
+          className="text-xs text-[#9A9A9A] uppercase tracking-[0.1em]"
+          style={{ fontFamily: 'var(--font-sans)' }}
+        >
+          {project.location}
+        </div>
+
+        {project.images.length > 1 && (
+          <div className="flex gap-2 overflow-x-auto">
+            {project.images.map((img, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveImgIdx(idx)}
+                className={`flex-shrink-0 cursor-pointer transition-opacity ${
+                  idx === activeImgIdx 
+                    ? 'ring-2 ring-[#0A0A0A] opacity-100' 
+                    : 'opacity-40 hover:opacity-100'
+                }`}
+              >
+                <img src={img} alt={`thumbnail ${idx + 1}`} className="w-16 h-12 object-cover" />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
 };

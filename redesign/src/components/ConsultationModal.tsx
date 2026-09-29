@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, ArrowUpRight } from 'lucide-react';
+import { X } from 'lucide-react';
 
 interface ConsultationModalProps {
   isOpen: boolean;
@@ -18,8 +18,6 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
     phone: '',
     email: '',
     community: preselectedProject || 'The Preserve at Fields (Frisco)',
-    budget: '$4,000,000 – $7,000,000',
-    timeline: 'Within 6 Months',
     message: ''
   });
 
@@ -31,12 +29,18 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md animate-in fade-in duration-300">
-      <div className="relative w-full max-w-xl bg-[#111218] border border-white/[0.1] p-8 sm:p-12 shadow-2xl max-h-[92vh] overflow-y-auto">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-xl bg-white p-8 sm:p-14 max-h-[92vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 p-2 text-slate-400 hover:text-white transition-colors cursor-pointer"
+          className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center text-[#9A9A9A] hover:text-[#0A0A0A] transition-colors cursor-pointer"
           aria-label="Close Modal"
         >
           <X className="w-5 h-5" />
@@ -44,57 +48,74 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
 
         {submitted ? (
           <div className="text-center py-12">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-[#c5a880]">
-              Inquiry Transmitted
-            </span>
-            <h3 className="font-serif text-3xl font-light text-white mt-2 mb-4">
-              Thank You, {formData.fullName}.
+            <h3
+              className="text-5xl font-bold uppercase tracking-tight text-[#0A0A0A] mb-4"
+              style={{ fontFamily: 'var(--font-display)' }}
+            >
+              THANK YOU
             </h3>
-            <p className="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed mb-8">
-              Your consultation request has been delivered directly to Shideh and Loy Lowary. We look forward to connecting with you shortly.
+            <p
+              className="text-sm text-[#6B6B6B] max-w-sm mx-auto leading-relaxed mb-8"
+              style={{ fontFamily: 'var(--font-sans)' }}
+            >
+              Thank you. In production, your inquiry would reach the Ventura team directly.
             </p>
             <button
               onClick={() => {
                 setSubmitted(false);
                 onClose();
               }}
-              className="text-[11px] uppercase tracking-[0.25em] text-[#c5a880] underline underline-offset-8 cursor-pointer"
+              className="text-xs uppercase tracking-[0.15em] text-[#0A0A0A] underline underline-offset-4 cursor-pointer"
+              style={{ fontFamily: 'var(--font-sans)' }}
             >
-              Return to Monograph
+              Close Window
             </button>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <span className="text-[10px] uppercase tracking-[0.3em] text-[#c5a880]">
-                Ventura Custom Homes &bull; Private Dialogue
-              </span>
-              <h3 className="font-serif text-3xl font-light text-white mt-1">
-                Schedule Consultation
+              <div className="inline-block text-[10px] tracking-[0.15em] uppercase text-amber-600 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full mb-4">
+                ⚠ Demo Form — Not Connected
+              </div>
+              <h3
+                className="text-5xl sm:text-6xl font-bold uppercase tracking-tight text-[#0A0A0A] leading-none"
+                style={{ fontFamily: 'var(--font-display)' }}
+              >
+                START A PROJECT
               </h3>
-              <p className="text-xs text-slate-400 mt-1 font-light">
-                Discuss custom estate commissions, lot acquisitions, or The Preserve villa models.
+              <p
+                className="text-sm text-[#6B6B6B] mt-2 font-light"
+                style={{ fontFamily: 'var(--font-sans)' }}
+              >
+                Tell us about your architectural vision or estate lot requirements.
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <label className="block text-[10px] uppercase tracking-[0.2em] text-slate-400 mb-1.5 font-light">
+                <label
+                  className="block text-[11px] uppercase tracking-[0.1em] text-[#9A9A9A] mb-1"
+                  style={{ fontFamily: 'var(--font-sans)' }}
+                >
                   Full Name *
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="Your Name"
+                  placeholder="Demo Name"
                   value={formData.fullName}
                   onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                  className="w-full bg-transparent border-b border-white/20 focus:border-[#c5a880] pb-2 text-sm text-white placeholder:text-slate-600 focus:outline-none transition-colors"
+                  className="bg-transparent border-0 border-b border-black/15 focus:border-[#0A0A0A] w-full py-2.5 text-[#0A0A0A] text-sm outline-none transition-colors placeholder:text-[#ccc]"
+                  style={{ fontFamily: 'var(--font-sans)' }}
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] uppercase tracking-[0.2em] text-slate-400 mb-1.5 font-light">
-                  Direct Phone *
+                <label
+                  className="block text-[11px] uppercase tracking-[0.1em] text-[#9A9A9A] mb-1"
+                  style={{ fontFamily: 'var(--font-sans)' }}
+                >
+                  Phone *
                 </label>
                 <input
                   type="tel"
@@ -102,83 +123,60 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({
                   placeholder="(214) 000-0000"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full bg-transparent border-b border-white/20 focus:border-[#c5a880] pb-2 text-sm text-white placeholder:text-slate-600 focus:outline-none transition-colors"
+                  className="bg-transparent border-0 border-b border-black/15 focus:border-[#0A0A0A] w-full py-2.5 text-[#0A0A0A] text-sm outline-none transition-colors placeholder:text-[#ccc]"
+                  style={{ fontFamily: 'var(--font-sans)' }}
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-[10px] uppercase tracking-[0.2em] text-slate-400 mb-1.5 font-light">
-                Email Address *
+              <label
+                className="block text-[11px] uppercase tracking-[0.1em] text-[#9A9A9A] mb-1"
+                style={{ fontFamily: 'var(--font-sans)' }}
+              >
+                Email *
               </label>
               <input
                 type="email"
                 required
-                placeholder="client@domain.com"
+                placeholder="demo@domain.com"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full bg-transparent border-b border-white/20 focus:border-[#c5a880] pb-2 text-sm text-white placeholder:text-slate-600 focus:outline-none transition-colors"
+                className="bg-transparent border-0 border-b border-black/15 focus:border-[#0A0A0A] w-full py-2.5 text-[#0A0A0A] text-sm outline-none transition-colors placeholder:text-[#ccc]"
+                style={{ fontFamily: 'var(--font-sans)' }}
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-[10px] uppercase tracking-[0.2em] text-slate-400 mb-1.5 font-light">
-                  Development / Location
-                </label>
-                <select
-                  value={formData.community}
-                  onChange={(e) => setFormData({ ...formData, community: e.target.value })}
-                  className="w-full bg-[#111218] border-b border-white/20 focus:border-[#c5a880] pb-2 text-xs text-white focus:outline-none transition-colors cursor-pointer"
-                >
-                  <option value="The Preserve at Fields (Frisco)">The Preserve at Fields (Frisco)</option>
-                  <option value="Hills of Kingswood (Frisco)">Hills of Kingswood (Frisco)</option>
-                  <option value="Highland Park (Beverly / Belclaire)">Highland Park (Beverly / Belclaire)</option>
-                  <option value="Old Preston Hollow, Dallas">Old Preston Hollow, Dallas</option>
-                  <option value="Building on Client Lot">Building on Client Lot</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-[10px] uppercase tracking-[0.2em] text-slate-400 mb-1.5 font-light">
-                  Target Budget
-                </label>
-                <select
-                  value={formData.budget}
-                  onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                  className="w-full bg-[#111218] border-b border-white/20 focus:border-[#c5a880] pb-2 text-xs text-white focus:outline-none transition-colors cursor-pointer"
-                >
-                  <option value="$2.5M – $4M">$2.5M – $4M</option>
-                  <option value="$4M – $7M">$4M – $7M</option>
-                  <option value="$7M – $12M">$7M – $12M</option>
-                  <option value="$12M+">$12M+</option>
-                </select>
-              </div>
-            </div>
-
             <div>
-              <label className="block text-[10px] uppercase tracking-[0.2em] text-slate-400 mb-1.5 font-light">
-                Project Notes
+              <label
+                className="block text-[11px] uppercase tracking-[0.1em] text-[#9A9A9A] mb-1"
+                style={{ fontFamily: 'var(--font-sans)' }}
+              >
+                Your Vision
               </label>
               <textarea
-                rows={2}
-                placeholder="Architectural preferences, walk-out basement needs, or lot requirements..."
+                rows={3}
+                placeholder="Site details, architectural style, or timeline..."
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                className="w-full bg-transparent border-b border-white/20 focus:border-[#c5a880] pb-2 text-sm text-white placeholder:text-slate-600 focus:outline-none transition-colors resize-none"
+                className="bg-transparent border-0 border-b border-black/15 focus:border-[#0A0A0A] w-full py-2.5 text-[#0A0A0A] text-sm outline-none transition-colors placeholder:text-[#ccc] resize-none"
+                style={{ fontFamily: 'var(--font-sans)' }}
               />
             </div>
 
             <button
               type="submit"
-              className="w-full py-4 bg-[#c5a880] hover:bg-[#d8be96] text-black text-[11px] tracking-[0.25em] uppercase font-medium transition-all duration-300 cursor-pointer flex items-center justify-center gap-2"
+              className="w-full bg-[#0A0A0A] text-white py-4 text-xs tracking-[0.15em] uppercase hover:bg-[#333] transition-colors cursor-pointer"
+              style={{ fontFamily: 'var(--font-sans)' }}
             >
-              <span>Transmit Consultation Request</span>
-              <ArrowUpRight className="w-4 h-4" />
+              Submit Inquiry (Demo)
             </button>
 
-            <div className="text-[10px] text-slate-500 text-center tracking-wider font-light">
-              Strictly confidential under non-disclosure. Direct executive routing.
+            <div
+              className="text-[11px] text-[#9A9A9A] text-center italic"
+              style={{ fontFamily: 'var(--font-sans)' }}
+            >
+              This is a UI prototype. No data is transmitted.
             </div>
           </form>
         )}

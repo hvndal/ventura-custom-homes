@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { TESTIMONIALS } from '../data/siteData';
 
 export const TestimonialsSection: React.FC = () => {
@@ -12,59 +13,76 @@ export const TestimonialsSection: React.FC = () => {
     setActiveIdx((curr) => (curr === TESTIMONIALS.length - 1 ? 0 : curr + 1));
   };
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveIdx((curr) => (curr === TESTIMONIALS.length - 1 ? 0 : curr + 1));
+    }, 7000);
+    return () => clearInterval(timer);
+  }, []);
+
   const active = TESTIMONIALS[activeIdx];
+  const currentNum = String(activeIdx + 1).padStart(2, '0');
+  const totalNum = String(TESTIMONIALS.length).padStart(2, '0');
 
   return (
-    <section id="testimonials" className="py-28 bg-[#0d0e11] border-t border-white/[0.06] relative">
-      <div className="max-w-[1200px] mx-auto px-6 sm:px-10 lg:px-12">
-        {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <span className="w-6 h-[1px] bg-[#c5a880]" />
-            <span className="text-[10px] uppercase tracking-[0.35em] text-[#c5a880] font-light">
-              Client & Homeowner Correspondence
-            </span>
-            <span className="w-6 h-[1px] bg-[#c5a880]" />
-          </div>
-          <h2 className="font-serif text-3xl sm:text-5xl font-light text-[#faf8f5] tracking-tight">
-            Built on <span className="italic text-[#c5a880]">Generations of Trust</span>
-          </h2>
-        </div>
-
-        {/* Big Editorial Quote Frame */}
-        <div className="relative py-12 px-6 sm:px-16 border-y border-white/[0.08] text-center">
-          <blockquote className="font-serif text-2xl sm:text-4xl md:text-5xl text-[#faf8f5] font-light italic leading-[1.3] max-w-4xl mx-auto">
-            "{active.quote}"
-          </blockquote>
-
-          {/* Homeowner Attribution */}
-          <div className="mt-10 flex flex-col items-center">
-            <div className="font-serif text-xl text-white font-normal">
-              {active.clientName}
-            </div>
-            <div className="text-[11px] uppercase tracking-[0.25em] text-[#c5a880] font-light mt-1">
-              {active.location} &bull; {active.project}
-            </div>
-          </div>
-
-          {/* Minimalist Switcher Arrows */}
-          <div className="mt-12 flex items-center justify-center gap-8">
-            <button
-              onClick={prev}
-              className="text-xs uppercase tracking-[0.25em] text-slate-500 hover:text-white transition-colors cursor-pointer"
+    <section id="testimonials" className="bg-[#F5F3EF] w-full py-32 md:py-40">
+      <div className="w-16 h-[1px] bg-[#0A0A0A] mx-auto mb-16"></div>
+      
+      <div className="relative min-h-[400px] flex flex-col items-center justify-center">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeIdx}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.7 }}
+            className="flex flex-col items-center w-full"
+          >
+            <blockquote 
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl italic font-light text-[#0A0A0A] text-center max-w-5xl mx-auto leading-[1.3] px-6"
+              style={{ fontFamily: 'var(--font-sans)' }}
             >
-              &larr; Previous
-            </button>
-            <span className="font-mono text-[11px] text-[#c5a880]">
-              0{activeIdx + 1} / 0{TESTIMONIALS.length}
-            </span>
-            <button
-              onClick={next}
-              className="text-xs uppercase tracking-[0.25em] text-slate-500 hover:text-white transition-colors cursor-pointer"
-            >
-              Next &rarr;
-            </button>
-          </div>
+              "{active.quote}"
+            </blockquote>
+            
+            <div className="mt-12 flex flex-col items-center text-center">
+              <div 
+                className="text-sm font-medium text-[#0A0A0A] uppercase tracking-[0.15em]"
+                style={{ fontFamily: 'var(--font-sans)' }}
+              >
+                [DEMO] {active.clientName}
+              </div>
+              <div 
+                className="text-xs text-[#9A9A9A] mt-1"
+                style={{ fontFamily: 'var(--font-sans)' }}
+              >
+                {active.location}
+              </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+
+        <div className="mt-12 flex items-center justify-center gap-6">
+          <button
+            onClick={prev}
+            className="text-xs text-[#9A9A9A] hover:text-[#0A0A0A] transition-colors cursor-pointer"
+            style={{ fontFamily: 'var(--font-sans)' }}
+          >
+            &larr; Prev
+          </button>
+          <span 
+            className="text-[#0A0A0A] tracking-widest text-sm"
+            style={{ fontFamily: 'var(--font-data)' }}
+          >
+            {currentNum} / {totalNum}
+          </span>
+          <button
+            onClick={next}
+            className="text-xs text-[#9A9A9A] hover:text-[#0A0A0A] transition-colors cursor-pointer"
+            style={{ fontFamily: 'var(--font-sans)' }}
+          >
+            Next &rarr;
+          </button>
         </div>
       </div>
     </section>
