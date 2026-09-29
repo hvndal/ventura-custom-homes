@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { FeaturedPortfolio } from './components/FeaturedPortfolio';
+import { FoundersSection } from './components/FoundersSection';
 import { TestimonialsSection } from './components/TestimonialsSection';
 import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
@@ -44,6 +45,8 @@ export function App() {
           onSelectProject={(project) => setSelectedProject(project)}
           onOpenConsultation={() => handleOpenConsultation()}
         />
+
+        <FoundersSection />
 
         <TestimonialsSection />
 

@@ -19,6 +19,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation, setActiveTab
 
   const navLinks = [
     { name: 'Works', id: 'portfolio' },
+    { name: 'Principals', id: 'founders' },
     { name: 'Voices', id: 'testimonials' },
     { name: 'Contact', id: 'contact' },
   ];
