@@ -41,12 +41,12 @@ export function App() {
           onScrollToSection={handleScrollToSection}
         />
 
+        <FoundersSection />
+
         <FeaturedPortfolio
           onSelectProject={(project) => setSelectedProject(project)}
           onOpenConsultation={() => handleOpenConsultation()}
         />
-
-        <FoundersSection />
 
         <TestimonialsSection />
 

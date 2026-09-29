@@ -12,7 +12,10 @@ export const Footer: React.FC = () => {
             VENTURA
           </div>
           <div className="flex gap-8" style={{ fontFamily: 'var(--font-sans)' }}>
-            <a href="#works" className="text-xs text-white/50 hover:text-white uppercase tracking-[0.1em] transition-colors">
+            <a href="#about" className="text-xs text-white/50 hover:text-white uppercase tracking-[0.1em] transition-colors">
+              About Us
+            </a>
+            <a href="#portfolio" className="text-xs text-white/50 hover:text-white uppercase tracking-[0.1em] transition-colors">
               Works
             </a>
             <a href="#contact" className="text-xs text-white/50 hover:text-white uppercase tracking-[0.1em] transition-colors">
