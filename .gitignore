@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+redesign/node_modules/
+
+# Production builds
+dist/
+redesign/dist/
+dist-ssr/
+redesign/dist-ssr/
+
+# Logs and environment
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+.env
+.env.local
+.env.*.local
+cookies.txt
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
