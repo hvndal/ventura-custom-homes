@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 
 interface HeroProps {
@@ -7,10 +7,28 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ onScrollToSection }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Mobile browsers often block/pause autoplay; force muted playback and retry on interaction.
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = true;
+    const tryPlay = () => { v.play().catch(() => {}); };
+    tryPlay();
+    document.addEventListener('touchstart', tryPlay, { once: true, passive: true });
+    document.addEventListener('visibilitychange', tryPlay);
+    return () => {
+      document.removeEventListener('touchstart', tryPlay);
+      document.removeEventListener('visibilitychange', tryPlay);
+    };
+  }, []);
+
   return (
-    <section className="relative w-full h-screen overflow-hidden bg-black">
+    <section className="relative w-full h-[100svh] min-h-[480px] overflow-hidden bg-black">
       {/* Full-bleed cinematic 1080p video with subtle initial scale settle */}
       <motion.video
+        ref={videoRef}
         initial={{ scale: 1.08, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
@@ -18,7 +36,9 @@ export const Hero: React.FC<HeroProps> = ({ onScrollToSection }) => {
         loop
         muted
         playsInline
-        className="absolute inset-0 w-full h-full object-cover"
+        preload="auto"
+        disablePictureInPicture
+        className="absolute inset-0 w-full h-full min-w-full min-h-full object-cover object-center"
         src="/ventura_stock_hero_1080p.mp4"
       />
 
